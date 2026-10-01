@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Конвертирует материалы из upload/ в формат, удобный для Claude.
 
-Для каждого файла создаётся knowledge/<slug>/:
+Для каждого файла создаётся knowledge/<подпапка как в upload>/<slug>/
+(например upload/labs/x.pdf -> knowledge/labs/x/):
   text/pNNN-MMM.md   текст по 10 страниц, перед каждой страницей маркер "=== Страница N ==="
   pages/NNN.jpg      картинка каждой страницы (формулы, графики, схемы смотреть здесь)
   meta.json          метаданные (хэш исходника, число страниц, оглавление)
@@ -88,9 +89,9 @@ def convert(src, dst):
 def write_index():
     lines = ["# Индекс базы знаний", "",
              "Автогенерируется `tools/ingest.py`. Как пользоваться — см. `/CLAUDE.md`.", ""]
-    for m in sorted(OUT.glob("*/meta.json")):
+    for m in sorted(OUT.glob("**/meta.json")):
         d = json.loads(m.read_text(encoding="utf-8"))
-        lines += [f"## `{m.parent.name}` — {Path(d['source']).name}",
+        lines += [f"## `{m.parent.relative_to(OUT)}` — {Path(d['source']).name}",
                   f"Страниц: {d['pages']} · исходник: `{d['source']}`", ""]
         if d["toc"]:
             lines += ["<details><summary>Оглавление</summary>", ""] + d["toc"][:300] + ["", "</details>", ""]
@@ -102,7 +103,7 @@ def main():
     for src in sorted(UPLOAD.rglob("*")):
         if not src.is_file() or src.suffix.lower() not in OFFICE | {".pdf"}:
             continue
-        dst = OUT / slugify(src.stem)
+        dst = OUT / src.parent.relative_to(UPLOAD) / slugify(src.stem)
         meta = dst / "meta.json"
         if not force and meta.exists() and json.loads(meta.read_text())["sha256"] == sha(src):
             print("skip", src.name)
