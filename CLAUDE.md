@@ -15,8 +15,10 @@
 - `obschie-polozheniya-i-klassifikaciya-protochnyh-mashin` — слайды лекции 1 (общие положения, классификация проточных машин).
 - `bashta-gidravlika` — Башта Т.М., «Гидравлика, гидромашины и гидроприводы», 2010 (OCR, текст шумный — сверяйся с картинкой).
 
+- `labs/` — лабораторные работы (`knowledge/labs/<doc>/`, тот же формат): `lr-1-ispytanie-centrobezhnogo-nasosa-na-vode`, `lr-1-ispytanie-odnostupenchatogo-cn`. Ищи по `knowledge/labs/*/text/`.
+
 ## Добавление новых материалов
-Пользователь кладёт новые файлы (pdf, docx, pptx…) в `upload/`. Затем:
+Пользователь кладёт новые файлы (pdf, docx, pptx…) в `upload/` (лабораторные — в `upload/labs/`; структура подпапок повторяется в `knowledge/`). Затем:
 ```
 pip install pymupdf        # один раз за сессию
 python3 tools/ingest.py    # конвертирует только новое/изменённое, обновляет INDEX.md
