@@ -1,0 +1,40 @@
+name: Ingest upload
+
+# При загрузке новых файлов в upload/ конвертирует их в knowledge/ и коммитит результат.
+on:
+  push:
+    paths:
+      - "upload/**"
+      - "tools/ingest.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ingest-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install pymupdf
+          sudo apt-get update -qq && sudo apt-get install -y -qq libreoffice-core libreoffice-writer libreoffice-impress
+      - name: Convert new materials
+        run: python3 tools/ingest.py
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add knowledge
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          git commit -m "Auto-ingest: update knowledge base"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
