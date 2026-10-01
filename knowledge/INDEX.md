@@ -81,6 +81,12 @@
 
 </details>
 
+## `lr-1-ispytanie-centrobezhnogo-nasosa-na-vode` — ЛР№1 Испытание центробежного насоса на воде.pdf
+Страниц: 9 · исходник: `upload/ЛР№1 Испытание центробежного насоса на воде.pdf`
+
+## `lr-1-ispytanie-odnostupenchatogo-cn` — ЛР№1 (Испытание одноступенчатого ЦН).pdf
+Страниц: 11 · исходник: `upload/ЛР№1 (Испытание одноступенчатого ЦН).pdf`
+
 ## `obschie-polozheniya-i-klassifikaciya-protochnyh-mashin` — Общие положения и классификация проточных машин.pdf
 Страниц: 49 · исходник: `upload/Общие положения и классификация проточных машин.pdf`
 
