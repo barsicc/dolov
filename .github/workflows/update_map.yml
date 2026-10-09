@@ -1,0 +1,42 @@
+name: Update map
+
+# После каждой загрузки/изменения материалов обновляет автоматические разделы КАРТА.md
+# (реестр файлов и очередь upload/) и коммитит результат.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "upload/**"
+      - "0*/**"
+      - "конспекты/**"
+      - "рисунки/**"
+      - "tools/update_map.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: map-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pymupdf
+      - name: Update КАРТА.md
+        run: python3 tools/update_map.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add КАРТА.md
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          git commit -m "Auto: update КАРТА.md"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
