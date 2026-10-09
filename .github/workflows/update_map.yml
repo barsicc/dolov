@@ -4,6 +4,7 @@ name: Update map
 # (реестр файлов и очередь upload/) и коммитит результат.
 on:
   push:
+    branches: [main]
     paths:
       - "upload/**"
       - "0*/**"
